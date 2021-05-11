@@ -2,11 +2,11 @@ import OpenTok
 
 final class OpenTokManager: NSObject, ObservableObject {
     // Replace with your OpenTok API key
-    private let kApiKey = "47196354"
+    private let kApiKey = ""
     // Replace with your generated session ID
-    private let kSessionId = "2_MX40NzE5NjM1NH5-MTYyMDczOTI3MjE5MX4rakxXNHNBSENVc1o1SVpFcEl1Q05mN1V-fg"
+    private let kSessionId = ""
     // Replace with your generated token
-    private let kToken = "T1==cGFydG5lcl9pZD00NzE5NjM1NCZzaWc9ZGZmZmMzZmJlZTBkYzE5ZDAwMjQ3ZDdiYmRjZTQ0YTFmMjNjZTU5YzpzZXNzaW9uX2lkPTJfTVg0ME56RTVOak0xTkg1LU1UWXlNRGN6T1RJM01qRTVNWDRyYWt4WE5ITkJTRU5WYzFvMVNWcEZjRWwxUTA1bU4xVi1mZyZjcmVhdGVfdGltZT0xNjIwNzM5NDE2Jm5vbmNlPTAuNzc0NDc0NjM4MjAwMjg0NyZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjIwODI1ODE2JmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9"
+    private let kToken = ""
     
     private lazy var session: OTSession = {
         return OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: self)!
