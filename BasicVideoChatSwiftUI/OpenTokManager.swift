@@ -20,8 +20,8 @@ final class OpenTokManager: NSObject, ObservableObject {
     
     private var subscriber: OTSubscriber?
     
-    @Published var pubview: UIView?
-    @Published var subview: UIView?
+    @Published var pubView: UIView?
+    @Published var subView: UIView?
     @Published var error: OTErrorWrapper?
     
     public func setup() {
@@ -46,7 +46,7 @@ final class OpenTokManager: NSObject, ObservableObject {
         
         if let view = publisher.view {
             DispatchQueue.main.async {
-                self.pubview = view
+                self.pubView = view
             }
         }
     }
@@ -62,13 +62,13 @@ final class OpenTokManager: NSObject, ObservableObject {
     
     private func cleanupSubscriber() {
         DispatchQueue.main.async {
-            self.subview = nil
+            self.subView = nil
         }
     }
     
     private func cleanupPublisher() {
         DispatchQueue.main.async {
-            self.pubview = nil
+            self.pubView = nil
         }
     }
     
@@ -130,7 +130,7 @@ extension OpenTokManager: OTSubscriberDelegate {
     func subscriberDidConnect(toStream subscriberKit: OTSubscriberKit) {
         if let view = subscriber?.view {
             DispatchQueue.main.async {
-                self.subview = view
+                self.subView = view
             }
         }
     }

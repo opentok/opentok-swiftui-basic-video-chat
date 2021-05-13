@@ -31,11 +31,11 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            otManager.pubview.flatMap { view in
+            otManager.pubView.flatMap { view in
                 OTView(view: view)
                     .frame(width: 200, height: 200, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             }.cornerRadius(5.0)
-            otManager.subview.flatMap { view in
+            otManager.subView.flatMap { view in
                 OTView(view: view)
                     .frame(width: 200, height: 200, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             }.cornerRadius(5.0)
