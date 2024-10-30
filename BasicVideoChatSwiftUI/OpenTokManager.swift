@@ -1,6 +1,11 @@
 import OpenTok
+import Combine
+import PencilKit
 
 final class OpenTokManager: NSObject, ObservableObject {
+    static let shared = OpenTokManager()
+    public let annotatorSignalID = UUID()
+    
     // Replace with your OpenTok API key
     private let kApiKey = ""
     // Replace with your generated session ID
@@ -24,8 +29,71 @@ final class OpenTokManager: NSObject, ObservableObject {
     @Published var subView: UIView?
     @Published var error: OTErrorWrapper?
     
-    public func setup() {
+    private let decoder = JSONDecoder()
+    private let encoder = JSONEncoder()
+    private var receivedAnnotationDataMap: [ReceivedChunkKey: [AnnotationBodyChunk]] = [:]
+    
+    private let signalSubject = PassthroughSubject<[PKStrokePoint], Never>()
+    public var onAnnotation: AnyPublisher<[PKStrokePoint], Never> {
+        signalSubject.eraseToAnyPublisher()
+    }
+    
+    override init() {
+        super.init()
         doConnect()
+    }
+    
+    // MARK: - Public
+    
+    public func sendSignal(body: AnnotationBody) {
+        if body.totalChunksCount == 1 {
+            if let jsonString = makeJSONString(body: body) {
+                self.sendSignal(jsonString: jsonString)
+            }
+        } else {
+            // OT Signalling has a max data limit of 8KB, chunk up bigger drawings
+            var dataArray: [String?] = []
+            
+            let headerBody = AnnotationBody(id: body.id, senderID: body.senderID, totalChunksCount: body.totalChunksCount)
+            
+            if let headerJsonString = makeJSONString(body: headerBody) {
+                dataArray.append(headerJsonString)
+                dataArray.append(contentsOf: chunksToJSONString(chunks: body.points))
+                for jsonString in dataArray {
+                    self.sendSignal(jsonString: jsonString!)
+                }
+            }
+        }
+    }
+    
+    // MARK: - Private
+    
+    private func makeJSONString(body: Codable) -> String? {
+        let jsonData = try? encoder.encode(body)
+        if let jsonData {
+            return String(data: jsonData, encoding: .utf8)
+        } else {
+            return nil
+        }
+    }
+    
+    private func chunksToJSONString(chunks: [AnnotationBodyChunk]) -> [String?] {
+        var dataArray: [String?] = []
+        
+        for chunk in chunks {
+            dataArray.append(makeJSONString(body: chunk))
+        }
+        
+        return dataArray
+    }
+    
+    private func sendSignal(jsonString: String) {
+        var error: OTError?
+        defer {
+            processError(error)
+        }
+        
+        session.signal(withType: "annotation", string: jsonString, connection: nil, error: &error)
     }
     
     private func doConnect() {
@@ -45,9 +113,7 @@ final class OpenTokManager: NSObject, ObservableObject {
         session.publish(publisher, error: &error)
         
         if let view = publisher.view {
-            DispatchQueue.main.async {
-                self.pubView = view
-            }
+            updatePubView(view: view)
         }
     }
     
@@ -61,25 +127,35 @@ final class OpenTokManager: NSObject, ObservableObject {
     }
     
     private func cleanupSubscriber() {
-        DispatchQueue.main.async {
-            self.subView = nil
-        }
+        updateSubView(view: nil)
     }
     
     private func cleanupPublisher() {
-        DispatchQueue.main.async {
-            self.pubView = nil
-        }
+        updatePubView(view: nil)
     }
     
     private func processError(_ error: OTError?) {
         if let err = error {
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.error = OTErrorWrapper(error: err.localizedDescription)
             }
         }
     }
+    
+    private func updatePubView(view: UIView?) {
+        Task { @MainActor in
+            self.pubView = view
+        }
+    }
+    
+    private func updateSubView(view: UIView?) {
+        Task { @MainActor in
+            self.subView = view
+        }
+    }
 }
+
+// MARK: - OTSessionDelegate
 
 extension OpenTokManager: OTSessionDelegate {
     func sessionDidConnect(_ session: OTSession) {
@@ -93,6 +169,9 @@ extension OpenTokManager: OTSessionDelegate {
     
     func session(_ session: OTSession, didFailWithError error: OTError) {
         print("session Failed to connect: \(error.localizedDescription)")
+        Task { @MainActor in
+            self.error = OTErrorWrapper(error: error.localizedDescription)
+        }
     }
     
     func session(_ session: OTSession, streamCreated stream: OTStream) {
@@ -106,7 +185,48 @@ extension OpenTokManager: OTSessionDelegate {
             cleanupSubscriber()
         }
     }
+    
+    private func getReceivedChunkKey(for annotationID: UUID) -> ReceivedChunkKey? {
+        for (key, _) in receivedAnnotationDataMap {
+            if key.annotationID == annotationID {
+                return key
+            }
+        }
+        return nil
+    }
+    
+    func session(_ session: OTSession, receivedSignalType type: String?, from connection: OTConnection?, with string: String?) {
+        if let jsonString = string, let jsonData = jsonString.data(using: .utf8) {
+            if let body = try? JSONDecoder().decode(AnnotationBody.self, from: jsonData) {
+                guard annotatorSignalID != body.senderID else { return }
+                if body.totalChunksCount > 1 {
+                    // Chunk header
+                    let key = ReceivedChunkKey(annotationID: body.id, totalChunksCount: body.totalChunksCount)
+                    if receivedAnnotationDataMap[key] == nil {
+                        receivedAnnotationDataMap[key] = []
+                    }
+                } else {
+                    signalSubject.send(body.points.first!.points)
+                }
+            } else if let chunk = try? JSONDecoder().decode(AnnotationBodyChunk.self, from: jsonData) {
+                guard annotatorSignalID != chunk.senderID else { return }
+                // Rebuild chunks
+                if let key = getReceivedChunkKey(for: chunk.annotationID) {
+                    receivedAnnotationDataMap[key]?.append(chunk)
+                    
+                    if let allChunks = receivedAnnotationDataMap[key], allChunks.count == key.totalChunksCount {
+                        // If all chunks returned, order and recombine
+                        let orderedChunks = allChunks.sorted { $0.position < $1.position }
+                        let points = orderedChunks.flatMap { $0.points }
+                        signalSubject.send(points)
+                    }
+                }
+            }
+        }
+    }
 }
+
+// MARK: - OTPublisherDelegate
 
 extension OpenTokManager: OTPublisherDelegate {
     func publisher(_ publisher: OTPublisherKit, streamCreated stream: OTStream) {
@@ -125,17 +245,20 @@ extension OpenTokManager: OTPublisherDelegate {
     }
 }
 
+// MARK: - OTSubscriberDelegate
+
 extension OpenTokManager: OTSubscriberDelegate {
     
     func subscriberDidConnect(toStream subscriberKit: OTSubscriberKit) {
         if let view = subscriber?.view {
-            DispatchQueue.main.async {
-                self.subView = view
-            }
+            updateSubView(view: view)
         }
     }
     
     func subscriber(_ subscriber: OTSubscriberKit, didFailWithError error: OTError) {
         print("Subscriber failed: \(error.localizedDescription)")
+        Task { @MainActor in
+            self.error = OTErrorWrapper(error: error.localizedDescription)
+        }
     }
 }

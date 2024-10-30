@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		046B33768CCA1C24CE1C8B18 /* Pods_BasicVideoChatSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1981ABBCC930A66C100B1B /* Pods_BasicVideoChatSwiftUI.framework */; };
+		121B73092CD0FAD2000FEF9B /* AnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121B73082CD0FAD2000FEF9B /* AnnotationView.swift */; };
+		121B730B2CD11917000FEF9B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121B730A2CD11917000FEF9B /* Models.swift */; };
+		121B730D2CD1194F000FEF9B /* View+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121B730C2CD1194F000FEF9B /* View+UIView.swift */; };
 		12ADFE402649804C00FED3A5 /* BasicVideoChatSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12ADFE3F2649804C00FED3A5 /* BasicVideoChatSwiftUIApp.swift */; };
 		12ADFE422649804C00FED3A5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12ADFE412649804C00FED3A5 /* ContentView.swift */; };
 		12ADFE442649804F00FED3A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12ADFE432649804F00FED3A5 /* Assets.xcassets */; };
@@ -16,6 +19,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		121B73082CD0FAD2000FEF9B /* AnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationView.swift; sourceTree = "<group>"; };
+		121B730A2CD11917000FEF9B /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		121B730C2CD1194F000FEF9B /* View+UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+UIView.swift"; sourceTree = "<group>"; };
 		12ADFE3C2649804C00FED3A5 /* BasicVideoChatSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BasicVideoChatSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		12ADFE3F2649804C00FED3A5 /* BasicVideoChatSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicVideoChatSwiftUIApp.swift; sourceTree = "<group>"; };
 		12ADFE412649804C00FED3A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -62,7 +68,10 @@
 			isa = PBXGroup;
 			children = (
 				12ADFE3F2649804C00FED3A5 /* BasicVideoChatSwiftUIApp.swift */,
+				121B730A2CD11917000FEF9B /* Models.swift */,
+				121B730C2CD1194F000FEF9B /* View+UIView.swift */,
 				12ADFE412649804C00FED3A5 /* ContentView.swift */,
+				121B73082CD0FAD2000FEF9B /* AnnotationView.swift */,
 				12ADFE522649827400FED3A5 /* OpenTokManager.swift */,
 				12ADFE432649804F00FED3A5 /* Assets.xcassets */,
 				12ADFE482649805000FED3A5 /* Info.plist */,
@@ -192,8 +201,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				12ADFE532649827400FED3A5 /* OpenTokManager.swift in Sources */,
+				121B73092CD0FAD2000FEF9B /* AnnotationView.swift in Sources */,
 				12ADFE422649804C00FED3A5 /* ContentView.swift in Sources */,
+				121B730D2CD1194F000FEF9B /* View+UIView.swift in Sources */,
 				12ADFE402649804C00FED3A5 /* BasicVideoChatSwiftUIApp.swift in Sources */,
+				121B730B2CD11917000FEF9B /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,7 +338,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"BasicVideoChatSwiftUI/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = BasicVideoChatSwiftUI/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -348,7 +360,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"BasicVideoChatSwiftUI/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = BasicVideoChatSwiftUI/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
