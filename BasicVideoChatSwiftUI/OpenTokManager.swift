@@ -1,15 +1,15 @@
 import OpenTok
 
 final class OpenTokManager: NSObject, ObservableObject {
-    // Replace with your OpenTok API key
-    private let kApiKey = ""
+    // Replace with your Application ID key
+    private let kAppId = ""
     // Replace with your generated session ID
     private let kSessionId = ""
     // Replace with your generated token
     private let kToken = ""
     
     private lazy var session: OTSession = {
-        return OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: self)!
+        return OTSession(apiKey: kAppId, sessionId: kSessionId, delegate: self)!
     }()
     
     private lazy var publisher: OTPublisher = {

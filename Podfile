@@ -6,6 +6,6 @@ target 'BasicVideoChatSwiftUI' do
   use_frameworks!
 
   # Pods for BasicVideoChatSwiftUI
-  pod 'OpenTok'
+  pod 'OTXCFramework'
 
 end

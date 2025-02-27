@@ -107,6 +107,7 @@
 				12ADFE382649804C00FED3A5 /* Sources */,
 				12ADFE392649804C00FED3A5 /* Frameworks */,
 				12ADFE3A2649804C00FED3A5 /* Resources */,
+				4FA5AFB38C6691755DA37E03 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -162,6 +163,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4FA5AFB38C6691755DA37E03 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BasicVideoChatSwiftUI/Pods-BasicVideoChatSwiftUI-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BasicVideoChatSwiftUI/Pods-BasicVideoChatSwiftUI-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BasicVideoChatSwiftUI/Pods-BasicVideoChatSwiftUI-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9CF838F2ACBAA3687792E9A1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
